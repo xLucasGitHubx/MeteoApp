@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetRoot"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@drawable/widget_bg">
+
+    <TextView android:id="@+id/txtWidgetCity"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="City" android:textSize="14sp" />
+
+    <TextView android:id="@+id/txtWidgetTemp"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="--°C" android:textSize="24sp" android:textStyle="bold" />
+</LinearLayout>
