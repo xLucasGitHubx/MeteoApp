@@ -1,33 +1,18 @@
 package com.example.meteoapp.database;
 
-import android.content.Context;
-
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-
 import com.example.meteoapp.model.Weather;
-import com.example.meteoapp.database.dao.WeatherDao;
 
-@Database(entities = {Weather.class}, version = 1)
-public abstract class AppDatabase extends RoomDatabase {
+import java.util.ArrayList;
+import java.util.List;
 
-    private static volatile AppDatabase INSTANCE;
+public class AppDatabase {
+    private final List<Weather> fakeStorage = new ArrayList<>();
 
-    public static AppDatabase get(Context context) {
-        if (INSTANCE == null) {
-            synchronized (AppDatabase.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(
-                            context.getApplicationContext(),
-                            AppDatabase.class,
-                            "weather_database"
-                    ).fallbackToDestructiveMigration().build();
-                }
-            }
-        }
-        return INSTANCE;
+    public void insertWeather(Weather weather) {
+        fakeStorage.add(weather);
     }
 
-    public abstract WeatherDao weatherDao();
+    public List<Weather> getAllWeather() {
+        return new ArrayList<>(fakeStorage);
+    }
 }

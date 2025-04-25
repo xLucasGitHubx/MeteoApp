@@ -1,22 +1,36 @@
 package com.example.meteoapp.database.dao;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.meteoapp.model.Weather;
+
+import java.util.ArrayList;
 import java.util.List;
 
-@Dao
-public interface WeatherDao {
+public class WeatherDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Weather weather);
+    private final List<Weather> storage = new ArrayList<>();
+    private final MutableLiveData<List<Weather>> liveDataList = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<Weather> liveDataCity = new MutableLiveData<>();
 
-    @Query("SELECT * FROM Weather WHERE city = :city LIMIT 1")
-    LiveData<Weather> getByCity(String city);
+    public void insert(Weather weather) {
+        storage.removeIf(w -> w.city.equalsIgnoreCase(weather.city)); // remplace si même ville
+        storage.add(weather);
+        liveDataList.setValue(new ArrayList<>(storage));
+    }
 
-    @Query("SELECT * FROM Weather ORDER BY timestamp DESC")
-    LiveData<List<Weather>> getAll();
+    public LiveData<Weather> getByCity(String city) {
+        for (Weather w : storage) {
+            if (w.city.equalsIgnoreCase(city)) {
+                liveDataCity.setValue(w);
+                break;
+            }
+        }
+        return liveDataCity;
+    }
+
+    public LiveData<List<Weather>> getAll() {
+        return liveDataList;
+    }
 }

@@ -1,36 +1,45 @@
 package com.example.meteoapp.model;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.location.Location;
-import android.location.LocationManager;
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import com.example.meteoapp.database.AppDatabase;
+
 import com.example.meteoapp.database.dao.WeatherDao;
+
+import java.util.Random;
 
 public class LocationRepository {
 
-    private final Context context;
-    private final WeatherDao dao;
+    private final WeatherDao weatherDao;
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     public LocationRepository(Context context) {
-        this.context = context.getApplicationContext();
-        this.dao = AppDatabase.get(this.context).weatherDao();
+        this.weatherDao = new WeatherDao(); // version sans Room
     }
 
-    @SuppressLint("MissingPermission")
     public LiveData<Weather> getWeatherForCurrentLocation() {
-        MutableLiveData<Weather> live = new MutableLiveData<>();
-        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        Location loc = lm != null ? lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) : null;
-        if (loc != null) {
-            live = (MutableLiveData<Weather>) getWeatherForCity("gps:" + loc.getLatitude() + "," + loc.getLongitude());
-        }
-        return live;
+        // Simule une météo en fonction de la localisation GPS (aléatoire ici)
+        Weather simulated = createFakeWeather("Ma Position");
+        weatherDao.insert(simulated);
+        return weatherDao.getByCity("Ma Position");
     }
 
     public LiveData<Weather> getWeatherForCity(String city) {
-        return dao.getByCity(city);
+        // Simule une météo pour une ville
+        Weather simulated = createFakeWeather(city);
+        weatherDao.insert(simulated);
+        return weatherDao.getByCity(city);
+    }
+
+    private Weather createFakeWeather(String city) {
+        Weather weather = new Weather();
+        weather.city = city;
+        weather.temperature = 10 + new Random().nextDouble() * 15;
+        weather.description = "Ensoleillé";
+        weather.timestamp = System.currentTimeMillis();
+        return weather;
     }
 }
