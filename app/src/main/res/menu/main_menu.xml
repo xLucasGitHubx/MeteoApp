@@ -1,14 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_settings"
-        android:title="Réglages"
+        android:title="@string/pref_unit_title"
         android:icon="@drawable/ic_settings"
-        app:showAsAction="never" />
+        android:showAsAction="never" />
     <item
         android:id="@+id/action_about"
-        android:title="À propos"
+        android:title="@string/about_text"
         android:icon="@drawable/ic_info"
-        app:showAsAction="never" />
+        android:showAsAction="never" />
 </menu>

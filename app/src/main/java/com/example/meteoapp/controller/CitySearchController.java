@@ -1,9 +1,15 @@
-﻿package com.example.meteoapp.controller;
+package com.example.meteoapp.controller;
 
+import android.content.Context;
+import androidx.lifecycle.LiveData;
 import com.example.meteoapp.model.Weather;
 
-public class CitySearchController {
-    public void onSearch(String city) {
-        // TODO: valider la saisie et dÃ©clencher MainController
+public class CitySearchController extends MainController {
+    public CitySearchController(Context context) {
+        super(context);
+    }
+
+    public LiveData<Weather> onSearch(String city) {
+        return fetchWeatherByCity(city);
     }
 }

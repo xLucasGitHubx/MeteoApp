@@ -2,22 +2,30 @@ package com.example.meteoapp.view.custom;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
 public class TemperatureGauge extends View {
-    private float temperature = 0;
-    private final Paint bar = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    public TemperatureGauge(Context c, AttributeSet a){ super(c,a); bar.setStrokeWidth(40); }
-    public void setTemperature(float t){ temperature=t; invalidate(); }
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private float temperature = 0f;
 
-    @Override protected void onDraw(Canvas c){
-        super.onDraw(c);
-        int h = getHeight();
-        int top = (int) (h*(1 - (temperature+30)/80)); // –30..50°C range
-        bar.setColor(0xFF2196F3); // blue
-        c.drawLine(getWidth()/2, h, getWidth()/2, top, bar);
+    public TemperatureGauge(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public void setTemperature(float value) {
+        temperature = value;
+        invalidate();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        paint.setColor(Color.BLUE);
+        float radius = Math.min(getWidth(), getHeight()) / 3f;
+        canvas.drawCircle(getWidth() / 2f, getHeight() / 2f, radius, paint);
     }
 }

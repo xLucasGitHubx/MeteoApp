@@ -1,18 +1,16 @@
-﻿package com.example.meteoapp.model;
+package com.example.meteoapp.model;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Weather {
-    private String city;
-    private double temperature;
-    private String description;
 
-    public Weather() {}
+    @PrimaryKey(autoGenerate = true)
+    public long id;
 
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
-
-    public double getTemperature() { return temperature; }
-    public void setTemperature(double temperature) { this.temperature = temperature; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String city;
+    public double temperature;
+    public String description;
+    public long timestamp;
 }

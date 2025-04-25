@@ -1,33 +1,36 @@
-﻿package com.example.meteoapp.model;
+package com.example.meteoapp.model;
 
-import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-
-import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import com.example.meteoapp.database.AppDatabase;
+import com.example.meteoapp.database.dao.WeatherDao;
 
 public class LocationRepository {
-    private Context context;
 
-    public LocationRepository(Context ctx) {
-        this.context = ctx;
+    private final Context context;
+    private final WeatherDao dao;
+
+    public LocationRepository(Context context) {
+        this.context = context.getApplicationContext();
+        this.dao = AppDatabase.get(this.context).weatherDao();
     }
 
-    public Location getLastKnownLocation() {
+    @SuppressLint("MissingPermission")
+    public LiveData<Weather> getWeatherForCurrentLocation() {
+        MutableLiveData<Weather> live = new MutableLiveData<>();
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        // TODO: gÃ©rer les permissions
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return TODO;
+        Location loc = lm != null ? lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) : null;
+        if (loc != null) {
+            live = (MutableLiveData<Weather>) getWeatherForCity("gps:" + loc.getLatitude() + "," + loc.getLongitude());
         }
-        return lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        return live;
+    }
+
+    public LiveData<Weather> getWeatherForCity(String city) {
+        return dao.getByCity(city);
     }
 }
